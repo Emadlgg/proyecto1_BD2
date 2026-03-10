@@ -1,0 +1,32 @@
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.pag-btn {
+  width: 36px;
+  height: 36px;
+  padding: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  border-radius: var(--radius);
+}
+
+.pag-btn--active {
+  background: var(--accent) !important;
+  color: #0f0f0f !important;
+  font-weight: 700;
+  border: none;
+}
+
+.pag-dots {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  padding: 0 4px;
+}
