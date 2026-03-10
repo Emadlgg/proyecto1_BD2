@@ -1,0 +1,132 @@
+.archivos-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.archivos-select {
+  min-width: 240px;
+}
+
+.archivos-count {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+
+.archivos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.archivo-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.archivo-card:hover {
+  border-color: var(--border-accent);
+  transform: translateY(-2px);
+}
+
+.archivo-img-wrap {
+  width: 100%;
+  height: 140px;
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.archivo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.2s;
+}
+
+.archivo-img-wrap:hover .archivo-img {
+  transform: scale(1.04);
+}
+
+.archivo-placeholder {
+  color: var(--text-muted);
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.archivo-info {
+  padding: 10px 12px 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.archivo-nombre {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
+
+.archivo-size {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.archivo-delete {
+  width: calc(100% - 24px);
+  margin: 4px 12px 12px;
+  justify-content: center;
+}
+
+/* Preview */
+.preview-modal {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  max-width: 700px;
+  width: 90%;
+  position: relative;
+  text-align: center;
+}
+
+.preview-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview-img {
+  max-width: 100%;
+  max-height: 500px;
+  border-radius: 8px;
+  object-fit: contain;
+}
+
+.preview-nombre {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 10px;
+}
