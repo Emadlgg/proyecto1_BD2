@@ -1,0 +1,63 @@
+.reportes-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.reporte-wide {
+  grid-column: span 2;
+}
+
+.reporte-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+}
+
+.reporte-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.reporte-header h3 {
+  font-size: 1rem;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+}
+
+.reporte-icon { color: var(--accent); }
+
+.conteo-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.conteo-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+}
+
+.conteo-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.conteo-label {
+  flex: 1;
+  color: var(--text-secondary);
+  text-transform: capitalize;
+}
+
+.conteo-valor {
+  font-weight: 600;
+  color: var(--text-primary);
+}

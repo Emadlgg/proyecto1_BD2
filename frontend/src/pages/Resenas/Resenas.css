@@ -1,0 +1,79 @@
+.resenas-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.resena-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  transition: border-color 0.2s;
+}
+
+.resena-card:hover { border-color: var(--border-accent); }
+
+.resena-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+  gap: 16px;
+}
+
+.resena-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.resena-usuario {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.resena-restaurante {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.resena-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.resena-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.estrellas {
+  display: flex;
+  gap: 2px;
+}
+
+.estrella {
+  background: none;
+  color: var(--text-muted);
+  padding: 0;
+  line-height: 1;
+}
+
+.estrella--activa { color: var(--accent); }
+.estrella:hover { color: var(--accent-hover); }
+
+.resena-comentario {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 8px;
+  font-style: italic;
+}
+
+.resena-fecha {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
