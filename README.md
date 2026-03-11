@@ -186,4 +186,8 @@ El dashboard embebido está disponible directamente en la sección **Reportes** 
 
 ---
 
+# VIDEO
+
+[Enlace a carpeta drive con el video](https://drive.google.com/drive/folders/1FKv17fLlgIFAXm-8kIc2UByYd9x82Kf8?usp=sharing)
+
 *CC3089 Base de Datos 2 — Facultad de Ingeniería, UVG — Semestre I 2026*
