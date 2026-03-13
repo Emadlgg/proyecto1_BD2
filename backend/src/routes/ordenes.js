@@ -4,7 +4,7 @@ const { getDB } = require('../config/db');
 const { ObjectId, MongoClient } = require('mongodb');
 require('dotenv').config();
 
-// GET todas las órdenes (con lookups, filtros, sort, skip, limit)
+// GET todas las órdenes
 router.get('/', async (req, res, next) => {
   try {
     const db = getDB();
@@ -88,20 +88,9 @@ router.post('/', async (req, res, next) => {
   }
 });
 
-// PUT actualizar estado de una orden
-router.put('/:id', async (req, res, next) => {
-  try {
-    const db = getDB();
-    const result = await db.collection('ordenes').updateOne(
-      { _id: new ObjectId(req.params.id) },
-      { $set: req.body }
-    );
-    if (result.matchedCount === 0) return res.status(404).json({ error: 'Orden no encontrada' });
-    res.json({ modifiedCount: result.modifiedCount });
-  } catch (err) { next(err); }
-});
+// ⚠️ IMPORTANTE: rutas específicas ANTES de /:id
 
-// PUT actualizar varias órdenes (ej. cambiar estado masivo)
+// PUT actualizar varias órdenes
 router.put('/bulk/update', async (req, res, next) => {
   try {
     const db = getDB();
@@ -112,7 +101,7 @@ router.put('/bulk/update', async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
-// PUT agregar ítem a orden existente ($push)
+// PUT agregar ítem ($push)
 router.put('/:id/items/add', async (req, res, next) => {
   try {
     const db = getDB();
@@ -128,7 +117,7 @@ router.put('/:id/items/add', async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
-// PUT quitar ítem de orden ($pull)
+// PUT quitar ítem ($pull)
 router.put('/:id/items/remove', async (req, res, next) => {
   try {
     const db = getDB();
@@ -144,17 +133,45 @@ router.put('/:id/items/remove', async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
-// DELETE eliminar una orden
-router.delete('/:id', async (req, res, next) => {
+// PUT actualizar cantidad de ítem existente
+router.put('/:id/items/update', async (req, res, next) => {
   try {
     const db = getDB();
-    const result = await db.collection('ordenes').deleteOne({ _id: new ObjectId(req.params.id) });
-    if (result.deletedCount === 0) return res.status(404).json({ error: 'Orden no encontrada' });
-    res.json({ deletedCount: result.deletedCount });
+    const { articuloId, cantidad, precioUnitario } = req.body;
+    const nuevoSubtotal = parseFloat((cantidad * precioUnitario).toFixed(2));
+
+    const orden = await db.collection('ordenes').findOne({ _id: new ObjectId(req.params.id) });
+    const itemAnterior = orden.items.find(i => i.articuloId.toString() === articuloId);
+    const diferencia = nuevoSubtotal - itemAnterior.subtotal;
+
+    const result = await db.collection('ordenes').updateOne(
+      { _id: new ObjectId(req.params.id), 'items.articuloId': new ObjectId(articuloId) },
+      {
+        $set: {
+          'items.$.cantidad': cantidad,
+          'items.$.subtotal': nuevoSubtotal
+        },
+        $inc: { montoTotal: diferencia }
+      }
+    );
+    res.json({ modifiedCount: result.modifiedCount });
   } catch (err) { next(err); }
 });
 
-// DELETE eliminar varias órdenes
+// PUT actualizar estado de una orden ← al final
+router.put('/:id', async (req, res, next) => {
+  try {
+    const db = getDB();
+    const result = await db.collection('ordenes').updateOne(
+      { _id: new ObjectId(req.params.id) },
+      { $set: req.body }
+    );
+    if (result.matchedCount === 0) return res.status(404).json({ error: 'Orden no encontrada' });
+    res.json({ modifiedCount: result.modifiedCount });
+  } catch (err) { next(err); }
+});
+
+// DELETE eliminar varias órdenes ← antes de /:id
 router.delete('/bulk/delete', async (req, res, next) => {
   try {
     const db = getDB();
@@ -162,6 +179,16 @@ router.delete('/bulk/delete', async (req, res, next) => {
     if (filtro.restauranteId) filtro.restauranteId = new ObjectId(filtro.restauranteId);
     if (filtro.userId) filtro.userId = new ObjectId(filtro.userId);
     const result = await db.collection('ordenes').deleteMany(filtro);
+    res.json({ deletedCount: result.deletedCount });
+  } catch (err) { next(err); }
+});
+
+// DELETE eliminar una orden ← al final
+router.delete('/:id', async (req, res, next) => {
+  try {
+    const db = getDB();
+    const result = await db.collection('ordenes').deleteOne({ _id: new ObjectId(req.params.id) });
+    if (result.deletedCount === 0) return res.status(404).json({ error: 'Orden no encontrada' });
     res.json({ deletedCount: result.deletedCount });
   } catch (err) { next(err); }
 });

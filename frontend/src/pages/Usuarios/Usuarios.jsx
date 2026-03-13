@@ -17,6 +17,7 @@ export default function Usuarios() {
   const [editando, setEditando] = useState(null)
   const [form, setForm] = useState(estadoInicial)
   const [page, setPage] = useState(0)
+  const [selectedIds, setSelectedIds] = useState([])
   const limit = 12
 
   const cargar = async () => {
@@ -34,6 +35,34 @@ export default function Usuarios() {
     u.nombre?.toLowerCase().includes(search.toLowerCase()) ||
     u.email?.toLowerCase().includes(search.toLowerCase())
   )
+
+  const toggleSeleccion = (id) => {
+    setSelectedIds(prev =>
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    )
+  }
+
+  const toggleTodos = () => {
+    if (selectedIds.length === filtrados.length) {
+      setSelectedIds([])
+    } else {
+      setSelectedIds(filtrados.map(u => u._id))
+    }
+  }
+
+  const eliminarSeleccionados = async () => {
+    if (!confirm(`¿Eliminar ${selectedIds.length} usuarios seleccionados?`)) return
+    try {
+      await fetch('http://localhost:3000/api/usuarios/bulk/delete', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filtro: { _id: { $in: selectedIds } } })
+      })
+      toast.success(`${selectedIds.length} usuarios eliminados`)
+      setSelectedIds([])
+      cargar()
+    } catch { toast.error('Error eliminando usuarios') }
+  }
 
   const abrirCrear = () => { setForm(estadoInicial); setEditando(null); setShowModal(true) }
   const abrirEditar = (u) => { setForm({ nombre: u.nombre, email: u.email }); setEditando(u._id); setShowModal(true) }
@@ -66,6 +95,25 @@ export default function Usuarios() {
   }
 
   const columnas = [
+    {
+      key: '_id',
+      label: (
+        <input
+          type="checkbox"
+          checked={selectedIds.length === filtrados.length && filtrados.length > 0}
+          onChange={toggleTodos}
+        />
+      ),
+      width: '40px',
+      render: (val) => (
+        <input
+          type="checkbox"
+          checked={selectedIds.includes(val)}
+          onChange={() => toggleSeleccion(val)}
+          onClick={e => e.stopPropagation()}
+        />
+      )
+    },
     {
       key: 'nombre',
       label: 'Usuario',
@@ -113,9 +161,16 @@ export default function Usuarios() {
           <h2 className="page-title">Usuarios</h2>
           <p className="page-subtitle">{filtrados.length} usuarios encontrados</p>
         </div>
-        <button className="btn-primary" onClick={abrirCrear}>
-          <Plus size={16} /> Agregar
-        </button>
+        <div style={{ display: 'flex', gap: 10 }}>
+          {selectedIds.length > 0 && (
+            <button className="btn-danger" onClick={eliminarSeleccionados}>
+              <Trash2 size={15} /> Eliminar ({selectedIds.length})
+            </button>
+          )}
+          <button className="btn-primary" onClick={abrirCrear}>
+            <Plus size={16} /> Agregar
+          </button>
+        </div>
       </div>
 
       <div className="search-bar" style={{ marginBottom: 24 }}>

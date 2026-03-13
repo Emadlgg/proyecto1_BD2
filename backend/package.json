@@ -8,7 +8,7 @@
     "start": "node src/index.js",
     "seed": "node scripts/seed.js",
     "seedExtra": "node scripts/seedExtra.js",
-    "indexes": "node scripts/createIndexes.js"    
+    "createIndexes": "node scripts/createIndexes.js"  
   },
   "keywords": [],
   "author": "",

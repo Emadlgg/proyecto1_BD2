@@ -7,3 +7,5 @@ export const updateOrden = (id, data) => axios.put(`${BASE}/${id}`, data)
 export const deleteOrden = (id) => axios.delete(`${BASE}/${id}`)
 export const agregarItem = (id, item) => axios.put(`${BASE}/${id}/items/add`, item)
 export const quitarItem = (id, data) => axios.put(`${BASE}/${id}/items/remove`, data)
+export const actualizarCantidadItem = (id, data) =>
+  axios.put(`${BASE}/${id}/items/update`, data)

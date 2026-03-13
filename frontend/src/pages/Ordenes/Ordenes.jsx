@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Plus, Search, X, Check, Trash2, ShoppingCart, ChevronDown, ChevronUp, PlusCircle, MinusCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
-import { getOrdenes, createOrden, updateOrden, deleteOrden, agregarItem, quitarItem } from '../../api/ordenes'
+import { getOrdenes, createOrden, updateOrden, deleteOrden, agregarItem, quitarItem, actualizarCantidadItem } from '../../api/ordenes'
 import { getRestaurantes } from '../../api/restaurantes'
 import { getUsuarios } from '../../api/usuarios'
 import { getMenuUnicos } from '../../api/menu'
@@ -25,9 +25,7 @@ export default function Ordenes() {
   const [page, setPage] = useState(0)
   const limit = 10
 
-  const [form, setForm] = useState({
-    userId: '', restauranteId: '', items: []
-  })
+  const [form, setForm] = useState({ userId: '', restauranteId: '', items: [] })
   const [itemForm, setItemForm] = useState({
     articuloId: '', nombre: '', cantidad: 1, precioUnitario: 0, subtotal: 0
   })
@@ -159,6 +157,19 @@ export default function Ordenes() {
     } catch { toast.error('Error removiendo ítem') }
   }
 
+  const actualizarCantidad = async (orden, item, nuevaCantidad) => {
+    if (nuevaCantidad < 1) return toast.error('La cantidad mínima es 1')
+    try {
+      await actualizarCantidadItem(orden._id, {
+        articuloId: item.articuloId,
+        cantidad: parseInt(nuevaCantidad),
+        precioUnitario: item.precioUnitario
+      })
+      toast.success('Cantidad actualizada')
+      cargar()
+    } catch { toast.error('Error actualizando cantidad') }
+  }
+
   const montoTotal = form.items.reduce((s, i) => s + i.subtotal, 0)
 
   const getBadgeEstado = (estado) => {
@@ -229,13 +240,27 @@ export default function Ordenes() {
                     {o.items?.map((item, i) => (
                       <div key={i} className="orden-item">
                         <span className="item-nombre">{item.nombre}</span>
-                        <span className="item-cantidad">x{item.cantidad}</span>
+                        <div className="item-cantidad-control">
+                          <button
+                            className="btn-secondary btn-sm"
+                            onClick={() => actualizarCantidad(o, item, item.cantidad - 1)}
+                          >
+                            <MinusCircle size={13} />
+                          </button>
+                          <span className="item-cantidad">{item.cantidad}</span>
+                          <button
+                            className="btn-secondary btn-sm"
+                            onClick={() => actualizarCantidad(o, item, item.cantidad + 1)}
+                          >
+                            <PlusCircle size={13} />
+                          </button>
+                        </div>
                         <span className="item-precio">Q{item.subtotal?.toFixed(2)}</span>
                         <button
                           className="btn-danger btn-sm"
                           onClick={() => confirmarQuitarItem(o, item.articuloId, item.subtotal)}
                         >
-                          <MinusCircle size={13} />
+                          <Trash2 size={13} />
                         </button>
                       </div>
                     ))}
